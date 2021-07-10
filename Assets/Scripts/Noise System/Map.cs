@@ -3,9 +3,6 @@ using UnityEngine.UI;
 
 public class Map : MonoBehaviour
 {
-    [SerializeField]
-    private RawImage debugImage;
-
     [Header("Dimensions")]
 
     [SerializeField]
@@ -27,34 +24,20 @@ public class Map : MonoBehaviour
     [HideInInspector]
     public float seed;
 
-    private void Start() => DrawMap();
+    private void Start() => GenerateMap();
 
     private void OnValidate()
     {
         if (updateOnValidate)
-            DrawMap();
+            GenerateMap();
     }
 
-    private void DrawMap()
-    {
-        heightMap = NoiseGenerator.Generate(width, scale, offset, seed);
-
-        Color[] pixels = new Color[width];
-
-        for (int x = 0; x < width; x++)
-            pixels[x] = Color.Lerp(Color.black, Color.white, heightMap[x]);
-
-        Texture2D tex = new Texture2D(width, 1);
-        tex.SetPixels(pixels);
-        tex.filterMode = FilterMode.Point;
-        tex.Apply();
-
-        debugImage.texture = tex;
-    }
+    private void GenerateMap()
+        => heightMap = NoiseGenerator.Generate(width, scale, offset, seed);
 
     public void GenerateSeed()
     {
         seed = Random.Range(0, 10000);
-        DrawMap();
+        GenerateMap();
     }
 }
